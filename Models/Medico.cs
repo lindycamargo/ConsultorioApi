@@ -8,6 +8,6 @@ namespace ConsultorioApi.Models
         public string Nome { get; set; }
         public string Crm { get; set; }
         public int ConsultorioId  { get; set; }
-        public Consultorio Consultorio { get; set; }
+        public Consultorio? Consultorio { get; set; }
     }
 }

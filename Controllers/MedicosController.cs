@@ -7,48 +7,50 @@ namespace ConsultorioApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PacientesController : ControllerBase
+    public class MedicosController : ControllerBase
     {
         private readonly AppDbContext _context;
 
-        public PacientesController(AppDbContext context)
+        public MedicosController(AppDbContext context)
         {
             _context = context;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Paciente>>> GetPacientes()
+        public async Task<ActionResult<IEnumerable<Medico>>> GetMedicos()
         {
-            return await _context.Pacientes.ToListAsync();
+            return await _context.Medicos.ToListAsync();
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Paciente>> GetPaciente(int id)
+        public async Task<ActionResult<Medico>> GetMedico(int id)
         {
-            var paciente = await _context.Pacientes.FindAsync(id);
+            var medico = await _context.Medicos.FindAsync(id);
 
-            if (paciente == null)
+            if (medico == null)
                 return NotFound();
 
-            return paciente;
+            return medico;
         }
 
         [HttpPost]
-        public async Task<ActionResult<Paciente>> PostPaciente(Paciente paciente)
+        public async Task<ActionResult<Medico>> PostMedico(Medico medico)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            _context.Pacientes.Add(paciente);
+            _context.Medicos.Add(medico);
 
             try
             {
                 await _context.SaveChangesAsync();
+
+                await _context.Entry(medico).Reference(m => m.Consultorio).LoadAsync();
             }
             catch (DbUpdateException ex)
             {
-                if (ex.InnerException?.Message.Contains("IX_Pacientes_Email") == true ||
-                    ex.InnerException?.Message.Contains("IX_Pacientes_Cpf") == true)
+                if (ex.InnerException?.Message.Contains("IX_Medicos_Email") == true ||
+                    ex.InnerException?.Message.Contains("IX_Medicos_Cpf") == true)
                 {
                     return Conflict("Email ou CPF já cadastrado.");
                 }
@@ -56,19 +58,19 @@ namespace ConsultorioApi.Controllers
                 throw;
             }
 
-            return CreatedAtAction(nameof(GetPaciente), new { id = paciente.Id }, paciente);
+            return CreatedAtAction(nameof(GetMedico), new { id = medico.Id }, medico);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPaciente(int id, Paciente paciente)
+        public async Task<IActionResult> PutMedico(int id, Paciente medico)
         {
-            if (id != paciente.Id)
+            if (id != medico.Id)
                 return BadRequest("ID da URL diferente do corpo.");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            _context.Entry(paciente).State = EntityState.Modified;
+            _context.Entry(medico).State = EntityState.Modified;
 
             try
             {
@@ -76,7 +78,7 @@ namespace ConsultorioApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_context.Pacientes.Any(e => e.Id == id))
+                if (!_context.Medicos.Any(e => e.Id == id))
                     return NotFound();
                 else
                     throw;
@@ -86,14 +88,14 @@ namespace ConsultorioApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePaciente(int id)
+        public async Task<IActionResult> DeleteMedico(int id)
         {
-            var paciente = await _context.Pacientes.FindAsync(id);
+            var medico = await _context.Medicos.FindAsync(id);
 
-            if (paciente == null)
+            if (medico == null)
                 return NotFound();
 
-            _context.Pacientes.Remove(paciente);
+            _context.Medicos.Remove(medico);
             await _context.SaveChangesAsync();
 
             return NoContent();

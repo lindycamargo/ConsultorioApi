@@ -7,7 +7,8 @@ namespace ConsultorioApi.Models
     [Index(nameof(Cpf), IsUnique = true)]
     public class Paciente
     {
-        public string Id { get; set; }
+        [Key]
+        public int Id { get; set; }
         [Required]
         public string Nome { get; set; }
         [Required]
