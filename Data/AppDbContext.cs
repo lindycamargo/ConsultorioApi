@@ -11,5 +11,6 @@ namespace ConsultorioApi.Data
         public DbSet<Models.Paciente> Pacientes { get; set; }
         public DbSet<Models.Consultorio> Consultorios { get; set; }
         public DbSet<Models.Medico> Medicos { get; set; }
+        public DbSet<Models.Consulta> Consultas { get; set; }
     }
 }

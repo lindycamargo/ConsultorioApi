@@ -22,7 +22,7 @@ namespace ConsultorioApi.Controllers
             return await _context.Medicos.ToListAsync();
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}")] 
         public async Task<ActionResult<Medico>> GetMedico(int id)
         {
             var medico = await _context.Medicos.FindAsync(id);
